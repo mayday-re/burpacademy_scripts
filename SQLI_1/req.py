@@ -18,6 +18,8 @@ class WebChecker:
 
 	def check_sqli(self, html_text):
 		checked_html = self.soup.find(string="Congratulations, you solved the lab!")
+		if checked_html == 'None':
+			raise Exception('Failed')
 		print(checked_html)
 
 	def find_hrefs(self):
